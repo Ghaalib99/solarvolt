@@ -8,6 +8,8 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useRouter } from "next/navigation";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 
 interface AppbarProps {
   color?: string;
@@ -15,6 +17,19 @@ interface AppbarProps {
 
 const Appbar = ({ color }: AppbarProps) => {
   const router = useRouter();
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleTraining = () => {
+    handleClose();
+    router.push("/training");
+  };
 
   return (
     <Box
@@ -42,7 +57,9 @@ const Appbar = ({ color }: AppbarProps) => {
             Solarvolt
           </Typography>
 
-          <Button color="inherit">About Us</Button>
+          <Button color="inherit" sx={{ display: { xs: "none", md: "block" } }}>
+            About Us
+          </Button>
           <Button color="inherit">Services</Button>
           <Button color="inherit" onClick={() => router.push("/training")}>
             Training
@@ -52,12 +69,35 @@ const Appbar = ({ color }: AppbarProps) => {
           <IconButton
             size="large"
             edge="start"
-            color="inherit"
+            // color="white"
             aria-label="menu"
-            sx={{ mr: 2 }}
+            sx={{ mr: 2, display: { xs: "block", md: "none" } }}
+            onClick={handleClick}
           >
             <MenuIcon />
           </IconButton>
+
+          <Menu
+            id="demo-positioned-menu"
+            aria-labelledby="demo-positioned-button"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            anchorOrigin={{
+              vertical: "top",
+              horizontal: "left",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "left",
+            }}
+          >
+            <MenuItem onClick={handleClose}>About Us</MenuItem>
+            <MenuItem onClick={handleClose}>Services</MenuItem>
+            <MenuItem onClick={handleTraining}>Training</MenuItem>
+            <MenuItem onClick={handleClose}>Contact Us</MenuItem>
+            <MenuItem onClick={handleClose}>Login</MenuItem>
+          </Menu>
         </Toolbar>
       </AppBar>
     </Box>

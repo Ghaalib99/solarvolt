@@ -199,7 +199,7 @@ export default function Landing() {
             <Typography variant="body2" mb={2} fontSize={16}>
               Welcome to a new era of comfort with Solavolt. We prioritize your
               comfort, offering solutions that go beyond the ordinary. Whether
-              it's for your home or business, our commitment to providing a
+              it &apos; for your home or business, our commitment to providing a
               comfortable and efficient environment is unwavering.
             </Typography>
 

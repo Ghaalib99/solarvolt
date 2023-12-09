@@ -26,6 +26,7 @@ import {
   updateTrainee,
 } from "@/firebase/firestore/traineeFireStore";
 import { FileDetails, TraineeProps } from "@/types/trainee";
+// import { sendEmail } from '@li'
 
 const Training = () => {
   const [trainees, setTrainees] = useState<TraineeProps[]>([]);
@@ -56,7 +57,7 @@ const Training = () => {
 
       setFormData({
         ...formData,
-        file: fileDetails,
+        file: file as File | null, // Adjust the type here
       });
     } else {
       setFormData({
@@ -79,6 +80,8 @@ const Training = () => {
 
       //  const updatedTrainees: TraineeProps[] = await getTrainees();
       //  setTrainees(updatedTrainees);
+
+      // await sendEmail(formData);
 
       // Clear the form data
       setFormData({
@@ -161,7 +164,8 @@ const Training = () => {
               </Typography>
             </Box>
 
-            {formData.file && (
+            {/* {console.log("File type:", formData.file)} */}
+            {formData.file && formData.file.name && (
               <Box
                 mb={3}
                 sx={{
@@ -169,17 +173,16 @@ const Training = () => {
                 }}
               >
                 <Typography variant="body2">Selected Image Preview:</Typography>
-                {formData.file instanceof Blob && (
-                  <img
-                    src={URL.createObjectURL(formData.file)}
-                    alt="Selected Preview"
-                    style={{
-                      maxWidth: "100%",
-                      maxHeight: "150px",
-                      marginTop: "8px",
-                    }}
-                  />
-                )}
+
+                <img
+                  src={URL.createObjectURL(formData.file)}
+                  alt="Selected Preview"
+                  style={{
+                    maxWidth: "100%",
+                    maxHeight: "150px",
+                    marginTop: "8px",
+                  }}
+                />
               </Box>
             )}
 
@@ -188,7 +191,7 @@ const Training = () => {
                 width: { xs: 1, md: 0.45 },
                 mb: 3,
                 "& input[type='file']": {
-                  display: "none", // Hide the default file input
+                  display: "none",
                 },
               }}
             >
@@ -422,32 +425,21 @@ const Training = () => {
             </Box>
 
             <Box mb={3}>
-              <FormControl
+              <TextField
+                id="outlined-disabled"
+                name="city"
+                value={formData.city}
+                label="State"
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  handleInputChange(e)
+                }
                 sx={{
                   width: 1,
                   "& .mui-6k9065-MuiOutlinedInput-notchedOutline": {
                     border: "1px solid",
                   },
                 }}
-              >
-                <InputLabel id="demo-simple-select-disabled-label">
-                  City
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-disabled-label"
-                  id="demo-simple-select-disabled"
-                  name="city"
-                  value={formData.city}
-                  label="City"
-                  onChange={(e: SelectChangeEvent<string>) =>
-                    handleInputChange(e)
-                  }
-                >
-                  <MenuItem value="lagos">Lagos</MenuItem>
-                  <MenuItem value="abuja">Abuja</MenuItem>
-                  <MenuItem value="port harcourt">Port Harcourt</MenuItem>
-                </Select>
-              </FormControl>
+              />
             </Box>
 
             <Button
@@ -463,7 +455,8 @@ const Training = () => {
                 !formData.income ||
                 !formData.city ||
                 !formData.dateOfBirth ||
-                !formData.gender
+                !formData.gender ||
+                !formData.file
               }
               variant="contained"
               startIcon={<Save />}

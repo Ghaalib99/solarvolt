@@ -50,7 +50,7 @@ const Appbar = ({ color }: AppbarProps) => {
           <Typography
             variant="h3"
             component="div"
-            ml={2}
+            // ml={2}
             sx={{ flexGrow: 1, color: color, cursor: "pointer" }}
             onClick={() => router.push("/")}
           >

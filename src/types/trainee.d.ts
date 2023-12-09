@@ -10,7 +10,7 @@ export interface TraineeProps {
     address: string;
     occupation: string;
     income: string;
-    file: file | null;
+    file: File | null;
     filePreview?: string
 }
 

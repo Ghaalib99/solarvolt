@@ -237,7 +237,7 @@ export default function Landing() {
             }}
           >
             <Typography variant="h3" mb={2} mt={4}>
-              Take control
+              Take control of your power supply
             </Typography>
             <Typography variant="body2" mb={2} fontSize={16}>
               At Solarvolt we empower you to take control of your energy future

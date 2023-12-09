@@ -246,7 +246,7 @@ export default function Landing() {
             </Typography>
 
             <Typography variant="body2" mb={2} fontSize={16}>
-              Our mission is to offer you more than just solar solutions – we
+              Our mission is to offer you more than just solar solutions, we
               provide a pathway to a cleaner, greener, and more self-sufficient
               lifestyle. Imagine a world where your energy needs are met by the
               sun, where you have control over your consumption, and where you

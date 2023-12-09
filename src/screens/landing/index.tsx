@@ -291,7 +291,7 @@ export default function Landing() {
             alignItems: "center",
           }}
         >
-          <Typography variant="body2">Ghaalib</Typography>
+          <Typography variant="body2">© 2023 Ghaalib99</Typography>
         </Container>
       </Box>
     </>

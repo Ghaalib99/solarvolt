@@ -1,6 +1,6 @@
 "use client";
-import React, { useState } from "react";
-import { Edit, Save } from "@mui/icons-material";
+import React, { useState, ChangeEvent } from "react";
+import { CloudUpload, Edit, Save } from "@mui/icons-material";
 import {
   Typography,
   Box,
@@ -25,11 +25,11 @@ import {
   getTrainees,
   updateTrainee,
 } from "@/firebase/firestore/traineeFireStore";
-import { TraineeProps } from "@/types/trainee";
+import { FileDetails, TraineeProps } from "@/types/trainee";
 
 const Training = () => {
   const [trainees, setTrainees] = useState<TraineeProps[]>([]);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<TraineeProps>({
     firstname: "",
     lastname: "",
     email: "",
@@ -40,23 +40,45 @@ const Training = () => {
     address: "",
     occupation: "",
     income: "",
+    file: null,
   });
+  const [loading, setLoading] = useState(false);
 
-  const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+  const handleInputChange = (
+    e: ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>
+  ) => {
+    if (e.target.name === "file") {
+      const fileInput = e.target as HTMLInputElement;
+      const file = fileInput.files?.[0];
+      const fileDetails: FileDetails | null = file
+        ? { name: file.name, size: file.size }
+        : null;
+
+      setFormData({
+        ...formData,
+        file: fileDetails,
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [e.target.name]: e.target.value,
+      });
+    }
   };
 
   const handleChanges = async () => {
     try {
-      const newTraineeId = await createTrainee(formData);
+      setLoading(true);
+      const newTraineeId = await createTrainee({
+        traineeData: formData,
+        file: formData.file,
+      });
+
       console.log("New trainee created with ID:", newTraineeId);
       successMessage();
-      // Optionally, you can fetch the updated list of trainees
-      const updatedTrainees: TraineeProps[] = await getTrainees();
-      setTrainees(updatedTrainees);
+
+      //  const updatedTrainees: TraineeProps[] = await getTrainees();
+      //  setTrainees(updatedTrainees);
 
       // Clear the form data
       setFormData({
@@ -70,15 +92,18 @@ const Training = () => {
         address: "",
         occupation: "",
         income: "",
+        file: null, // Clear the file field
       });
+      setLoading(false);
     } catch (error) {
       console.error("Error creating trainee: ", error);
       errorMessage2();
+      setLoading(false);
     }
   };
 
   const errorMessage1 = () => {
-    toast.success("Please fill in all required fields.", {
+    toast.error("Please fill in all required fields.", {
       position: "top-center",
       autoClose: 5000,
       hideProgressBar: false,
@@ -91,7 +116,7 @@ const Training = () => {
   };
 
   const errorMessage2 = () => {
-    toast.success("An error occured. Please try again later", {
+    toast.error("An error occured. Please try again later", {
       position: "top-center",
       autoClose: 5000,
       hideProgressBar: false,
@@ -136,6 +161,62 @@ const Training = () => {
               </Typography>
             </Box>
 
+            {formData.file && (
+              <Box
+                mb={3}
+                sx={{
+                  textAlign: { xs: "center", md: "left" },
+                }}
+              >
+                <Typography variant="body2">Selected Image Preview:</Typography>
+                {formData.file instanceof Blob && (
+                  <img
+                    src={URL.createObjectURL(formData.file)}
+                    alt="Selected Preview"
+                    style={{
+                      maxWidth: "100%",
+                      maxHeight: "150px",
+                      marginTop: "8px",
+                    }}
+                  />
+                )}
+              </Box>
+            )}
+
+            <Box
+              sx={{
+                width: { xs: 1, md: 0.45 },
+                mb: 3,
+                "& input[type='file']": {
+                  display: "none", // Hide the default file input
+                },
+              }}
+            >
+              <input
+                accept="image/*"
+                id="contained-button-file"
+                type="file"
+                name="file"
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  handleInputChange(e)
+                }
+              />
+              <label htmlFor="contained-button-file">
+                <Button
+                  variant="contained"
+                  component="span"
+                  sx={{ width: "100%" }}
+                  startIcon={<CloudUpload />}
+                >
+                  Upload Passport
+                </Button>
+              </label>
+              <Typography variant="body2" mt={1} fontSize={8}>
+                Make sure image is your real image which clearly shows you face.
+                Avatars or placeholder images are not allowed.
+              </Typography>
+            </Box>
+
             <Box
               sx={{
                 mb: { xs: 3, md: 0 },
@@ -151,8 +232,9 @@ const Training = () => {
                   label="First Name"
                   name="firstname"
                   value={formData.firstname}
-                  defaultValue={formData.firstname}
-                  onChange={handleInputChange}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    handleInputChange(e)
+                  }
                   sx={{
                     width: 1,
 
@@ -168,8 +250,9 @@ const Training = () => {
                   label="last Name"
                   name="lastname"
                   value={formData.lastname}
-                  defaultValue={formData.lastname}
-                  onChange={handleInputChange}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    handleInputChange(e)
+                  }
                   sx={{
                     width: 1,
                     "& .mui-6k9065-MuiOutlinedInput-notchedOutline": {
@@ -185,8 +268,9 @@ const Training = () => {
                 label="Email"
                 name="email"
                 value={formData.email}
-                defaultValue={formData.email}
-                onChange={handleInputChange}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  handleInputChange(e)
+                }
                 sx={{
                   width: 1,
                   "& .mui-6k9065-MuiOutlinedInput-notchedOutline": {
@@ -201,8 +285,9 @@ const Training = () => {
                 label="Phone Number"
                 name="phoneNumber"
                 value={formData.phoneNumber}
-                defaultValue={formData.phoneNumber}
-                onChange={handleInputChange}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  handleInputChange(e)
+                }
                 sx={{
                   width: 1,
                   "& .mui-6k9065-MuiOutlinedInput-notchedOutline": {
@@ -227,8 +312,9 @@ const Training = () => {
                   label="Occupation"
                   name="occupation"
                   value={formData.occupation}
-                  defaultValue={formData.occupation}
-                  onChange={handleInputChange}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    handleInputChange(e)
+                  }
                   sx={{
                     width: 1,
 
@@ -244,8 +330,9 @@ const Training = () => {
                   label="Income (p/a)"
                   name="income"
                   value={formData.income}
-                  defaultValue={formData.income}
-                  onChange={handleInputChange}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    handleInputChange(e)
+                  }
                   sx={{
                     width: 1,
                     "& .mui-6k9065-MuiOutlinedInput-notchedOutline": {
@@ -284,8 +371,9 @@ const Training = () => {
                     name="gender"
                     value={formData.gender}
                     label="Gender"
-                    defaultValue={formData.gender}
-                    onChange={handleInputChange}
+                    onChange={(e: SelectChangeEvent<string>) =>
+                      handleInputChange(e)
+                    }
                   >
                     <MenuItem value="male">Male</MenuItem>
                     <MenuItem value="female">Female</MenuItem>
@@ -302,8 +390,9 @@ const Training = () => {
                   }}
                   name="dateOfBirth"
                   value={formData.dateOfBirth}
-                  defaultValue={formData.dateOfBirth}
-                  onChange={handleInputChange}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    handleInputChange(e)
+                  }
                   sx={{
                     width: 1,
                     "& .mui-6k9065-MuiOutlinedInput-notchedOutline": {
@@ -320,8 +409,9 @@ const Training = () => {
                 label="Address"
                 name="address"
                 value={formData.address}
-                defaultValue={formData.address}
-                onChange={handleInputChange}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  handleInputChange(e)
+                }
                 sx={{
                   width: 1,
                   "& .mui-6k9065-MuiOutlinedInput-notchedOutline": {
@@ -349,8 +439,9 @@ const Training = () => {
                   name="city"
                   value={formData.city}
                   label="City"
-                  defaultValue={formData.city}
-                  onChange={handleInputChange}
+                  onChange={(e: SelectChangeEvent<string>) =>
+                    handleInputChange(e)
+                  }
                 >
                   <MenuItem value="lagos">Lagos</MenuItem>
                   <MenuItem value="abuja">Abuja</MenuItem>
@@ -377,7 +468,7 @@ const Training = () => {
               variant="contained"
               startIcon={<Save />}
             >
-              Submit
+              {loading ? "Submitting..." : "Submit"}
             </Button>
           </Box>
           <ToastContainer

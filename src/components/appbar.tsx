@@ -60,16 +60,25 @@ const Appbar = ({ color }: AppbarProps) => {
           <Button color="inherit" sx={{ display: { xs: "none", md: "block" } }}>
             About Us
           </Button>
-          <Button color="inherit">Services</Button>
-          <Button color="inherit" onClick={() => router.push("/training")}>
+          <Button color="inherit" sx={{ display: { xs: "none", md: "block" } }}>
+            Services
+          </Button>
+          <Button
+            color="inherit"
+            sx={{ display: { xs: "none", md: "block" } }}
+            onClick={() => router.push("/training")}
+          >
             Training
           </Button>
-          <Button color="inherit">Contact Us</Button>
-          <Button color="inherit">Login</Button>
+          <Button color="inherit" sx={{ display: { xs: "none", md: "block" } }}>
+            Contact Us
+          </Button>
+          <Button color="inherit" sx={{ display: { xs: "none", md: "block" } }}>
+            Login
+          </Button>
           <IconButton
             size="large"
             edge="start"
-            // color="white"
             aria-label="menu"
             sx={{ mr: 2, display: { xs: "block", md: "none" } }}
             onClick={handleClick}
@@ -78,18 +87,18 @@ const Appbar = ({ color }: AppbarProps) => {
           </IconButton>
 
           <Menu
-            id="demo-positioned-menu"
-            aria-labelledby="demo-positioned-button"
+            id="basic-menu"
             anchorEl={anchorEl}
             open={open}
             onClose={handleClose}
-            anchorOrigin={{
-              vertical: "top",
-              horizontal: "left",
+            MenuListProps={{
+              "aria-labelledby": "basic-button",
             }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "left",
+            sx={{
+              "& .mui-cn3m1d-MuiPaper-root-MuiPopover-paper-MuiMenu-paper": {
+                left: 395,
+                width: 200,
+              },
             }}
           >
             <MenuItem onClick={handleClose}>About Us</MenuItem>

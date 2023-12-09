@@ -1,18 +1,16 @@
+import { TraineeProps } from '@/types/trainee';
 import { db } from '../firebase';
+import { storage } from '../firebase'
+import {
+    ref,
+    uploadBytes,
+    getDownloadURL,
+} from 'firebase/storage';
 import { collection, doc, addDoc, updateDoc, serverTimestamp, getDocs, query } from 'firebase/firestore';
 
-interface TraineeData {
-    traineeID: string,
-    firstname: string;
-    lastname: string;
-    email: string;
-    phoneNumber: string;
-    city: string;
-    dateOfBirth: string;
-    gender: string;
-    address: string;
-    occupation: string;
-    income: string;
+interface CreateTraineeParams {
+    traineeData: TraineeProps;
+    file: File | null;
 }
 
 export const traineeDocRef = (traineeId: string) => {
@@ -37,21 +35,55 @@ export const getTrainees = async () => {
     }
 };
 
-export const createTrainee = async (traineeData: TraineeData) => {
-    try {
-        const traineeRef = await addDoc(collection(db, 'trainees'), {
-            ...traineeData,
-            createdAt: serverTimestamp(),
-        });
+// export const createTrainee = async (traineeData: TraineeProps) => {
+//     try {
+//         const traineeRef = await addDoc(collection(db, 'trainees'), {
+//             ...traineeData,
+//             createdAt: serverTimestamp(),
+//         });
 
-        return traineeRef.id;
+//         return traineeRef.id;
+//     } catch (error) {
+//         console.error('Error adding trainee document: ', error);
+//         throw error;
+//     }
+// };
+
+export const createTrainee = async ({ traineeData, file }: CreateTraineeParams) => {
+    try {
+        if (file) {
+            // Upload the file to Firebase Storage
+            const storageRef = ref(storage, `traineeFiles/${file.name}`);
+            await uploadBytes(storageRef, file);
+
+            // Get the download URL of the uploaded file
+            const fileDownloadURL = await getDownloadURL(storageRef);
+
+            // Add the trainee document with the file URL
+            const traineeRef = await addDoc(collection(db, 'trainees'), {
+                ...traineeData,
+                file: fileDownloadURL,
+                createdAt: serverTimestamp(),
+            });
+
+            return traineeRef.id;
+        } else {
+            // Add the trainee document without the file URL
+            const traineeRef = await addDoc(collection(db, 'trainees'), {
+                ...traineeData,
+                file: null,
+                createdAt: serverTimestamp(),
+            });
+
+            return traineeRef.id;
+        }
     } catch (error) {
         console.error('Error adding trainee document: ', error);
         throw error;
     }
 };
 
-export const updateTrainee = async (traineeId: string, traineeData: TraineeData) => {
+export const updateTrainee = async (traineeId: string, traineeData: TraineeProps) => {
     const traineeRef = traineeDocRef(traineeId);
 
     try {

@@ -176,10 +176,11 @@ export default function Landing() {
               marginX: { xs: "auto", md: 0 },
             }}
           >
-            <img
+            <Box
+              component="img"
               src="/image1-removebg.png"
               alt=""
-              style={{
+              sx={{
                 width: "500px",
                 height: "400px",
               }}

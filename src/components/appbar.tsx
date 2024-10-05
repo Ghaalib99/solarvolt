@@ -11,17 +11,20 @@ import { useRouter } from "next/navigation";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 
+// Combine the two prop interfaces
 interface AppbarProps {
   color?: string;
 }
 
-const Appbar = ({ color }: AppbarProps) => {
+const Appbar: React.FC<AppbarProps> = ({ color }) => {
   const router = useRouter();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -29,6 +32,13 @@ const Appbar = ({ color }: AppbarProps) => {
   const handleTraining = () => {
     handleClose();
     router.push("/training");
+  };
+
+  const handleNavigation = (id: string) => {
+    const section = document.getElementById(id);
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   return (
@@ -50,32 +60,46 @@ const Appbar = ({ color }: AppbarProps) => {
           <Typography
             variant="h3"
             component="div"
-            // ml={2}
             sx={{ flexGrow: 1, color: color, cursor: "pointer" }}
             onClick={() => router.push("/")}
           >
             Solarvolt
           </Typography>
 
-          <Button color="inherit" sx={{ display: { xs: "none", md: "block" } }}>
+          {/* Desktop buttons */}
+          <Button
+            onClick={() => handleNavigation("about")}
+            color="inherit"
+            sx={{ display: { xs: "none", md: "block" } }}
+          >
             About Us
           </Button>
-          <Button color="inherit" sx={{ display: { xs: "none", md: "block" } }}>
+          <Button
+            onClick={() => handleNavigation("services")}
+            color="inherit"
+            sx={{ display: { xs: "none", md: "block" } }}
+          >
             Services
           </Button>
           <Button
             color="inherit"
             sx={{ display: { xs: "none", md: "block" } }}
-            onClick={() => router.push("/training")}
+            onClick={handleTraining}
           >
             Training
           </Button>
-          <Button color="inherit" sx={{ display: { xs: "none", md: "block" } }}>
+          <Button
+            onClick={() => handleNavigation("contact")}
+            color="inherit"
+            sx={{ display: { xs: "none", md: "block" } }}
+          >
             Contact Us
           </Button>
           <Button color="inherit" sx={{ display: { xs: "none", md: "block" } }}>
             Login
           </Button>
+
+          {/* Mobile menu */}
           <IconButton
             size="large"
             edge="start"
@@ -86,6 +110,7 @@ const Appbar = ({ color }: AppbarProps) => {
             <MenuIcon />
           </IconButton>
 
+          {/* Dropdown menu for mobile */}
           <Menu
             id="basic-menu"
             anchorEl={anchorEl}
@@ -94,17 +119,17 @@ const Appbar = ({ color }: AppbarProps) => {
             MenuListProps={{
               "aria-labelledby": "basic-button",
             }}
-            sx={{
-              "& .mui-cn3m1d-MuiPaper-root-MuiPopover-paper-MuiMenu-paper": {
-                left: 395,
-                width: 200,
-              },
-            }}
           >
-            <MenuItem onClick={handleClose}>About Us</MenuItem>
-            <MenuItem onClick={handleClose}>Services</MenuItem>
+            <MenuItem onClick={() => handleNavigation("about")}>
+              About Us
+            </MenuItem>
+            <MenuItem onClick={() => handleNavigation("services")}>
+              Services
+            </MenuItem>
             <MenuItem onClick={handleTraining}>Training</MenuItem>
-            <MenuItem onClick={handleClose}>Contact Us</MenuItem>
+            <MenuItem onClick={() => handleNavigation("contact")}>
+              Contact Us
+            </MenuItem>
             <MenuItem onClick={handleClose}>Login</MenuItem>
           </Menu>
         </Toolbar>

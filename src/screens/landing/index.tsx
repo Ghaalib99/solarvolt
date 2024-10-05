@@ -35,7 +35,7 @@ export default function Landing() {
           <Box
             sx={{
               // mt: 1,
-              marginX: { xs: "auto" },
+              // marginX: { xs: "auto" },
               mb: { xs: 6, md: 0 },
               ml: 8,
               width: 0.6,
@@ -49,9 +49,10 @@ export default function Landing() {
               Solarvolt Energy Solutions
             </Typography>
             <Typography variant="body1" fontSize={14} mb={3}>
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-              Quibusdam voluptatum vero quidem corporis pariatur aliquid
-              assumenda explicabo provident incidunt beatae.
+              Join the energy revolution with Solarvolt, empowering individuals,
+              businesses, and communities to thrive through clean, reliable, and
+              cost-effective solar energy solutions that shape a sustainable
+              future.
             </Typography>
             <Button
               variant="contained"
@@ -141,7 +142,7 @@ export default function Landing() {
         <Box
           sx={{
             position: { xs: "relative", md: "absolute" },
-            top: { md: 230, lg: 230 },
+            top: { md: 300, lg: 280 },
             left: { xs: 0, md: 170 },
             width: 1,
           }}

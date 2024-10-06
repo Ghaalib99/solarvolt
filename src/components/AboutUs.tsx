@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Container, Grid, Typography, Paper, Avatar } from "@mui/material";
 import { EmojiObjects, VerifiedUser, Public } from "@mui/icons-material";
+import Image from "next/image";
 
 const AboutUs = () => {
   return (
@@ -244,13 +245,15 @@ const AboutUs = () => {
               marginX: { xs: "auto", md: 0 },
             }}
           >
-            <img
+            <Image
               src="/image2-removebg.png"
               alt=""
-              style={{
-                width: "400px",
-                height: "400px",
-              }}
+              width={400}
+              height={400}
+              //   style={{
+              //     width: "400px",
+              //     height: "400px",
+              //   }}
             />
           </Box>
         </Container>

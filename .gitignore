@@ -39,6 +39,6 @@ yarn-error.log*
 next-env.d.ts
 
 
-firebase.ts
-traineeFireStore.ts
-createTraineeDb.ts
+# firebase.ts
+# traineeFireStore.ts
+# createTraineeDb.ts

@@ -21,7 +21,7 @@ const ContactUs = () => {
           Contact Us
         </Typography>
         <Typography variant="body1" align="center" paragraph>
-          We'd love to hear from you! Please fill out the form below.
+          We&pos;d love to hear from you! Please fill out the form below.
         </Typography>
 
         <form noValidate autoComplete="off">
